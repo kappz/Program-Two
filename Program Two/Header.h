@@ -41,6 +41,8 @@ public:
 	bool unitTestFind();
 private:
 	Node *strand;
+	Node *head;
+	Node *copyHead;
 	int length;
 };
 
@@ -52,16 +54,51 @@ DNA::DNA(string dna)
 	POST: a link list has been created, with each node containing a single character of
 	the string that was passed through.
 	*/
+	strand = new Node;
+	head = strand;
 	strand->acid = dna.at(0);
 	strand->next = nullptr;
 	++length;
-	Node *temp = strand->next;
 	for (int i = 1; 1 < dna.size(); ++i)
 	{
-		temp = new Node;
-		temp->acid = dna.at(i);
-		temp->next = nullptr;
-		temp = temp->next;
+		strand->next = new Node;
+		strand->acid = dna.at(i);
+		strand->next = nullptr;
 		++length;
 	}
+}
+
+DNA::DNA(const DNA& rhs)
+{
+	/*
+	PRE: an operation requiring a copy constructor has been performed
+	an object of type DNA is passed through by reference
+	POST: a deep copy of the original argument has been created and 
+	temporarly stored in memory
+	*/
+	Node *oldWalker = head;
+	Node *copyStrand = new Node;
+	copyHead = copyStrand;
+	copyStrand->acid = oldWalker->acid;
+	copyStrand->next = nullptr;
+	while (oldWalker->next != nullptr)
+	{
+		oldWalker = oldWalker->next;
+		copyStrand->next = new Node;
+		copyStrand->acid = oldWalker->acid;
+		copyStrand->next = nullptr;
+	}	
+}
+
+DNA::~DNA()
+{
+	/*
+	PRE: an operation requiring a delete constructor has been performed
+	POST: an object has been deleted from memory
+	*/
+}
+
+bool DNA::operator==(const DNA& rhs) const
+{
+	
 }
