@@ -164,20 +164,24 @@ bool DNA::operator==(const DNA& rhs) const
 DNA DNA::operator=(const DNA& rhs)
 
 {
+	Node *newWalker = nullptr;
 	Node *rhsWalker = rhs.strand;
-	Node *lhsWalker = this->strand;
-	Node *deletePtr = lhsWalker;
-	this->strand = new Node;
-	Node *newWalker = this->strand;
+//	Node *deleteWalker = this->strand;
+//	Node *deletePtr = deleteWalker;
+	this->strand = new Node(rhsWalker->acid);
+	newWalker = this->strand;
+	rhsWalker = rhsWalker->next;
+//	while (deleteWalker != nullptr)
+//	{
+//		deleteWalker = deleteWalker->next;
+//		delete deletePtr;
+//		deletePtr = deleteWalker;
+//	}
 	while (rhsWalker != nullptr)
 	{
-		newWalker->acid = rhsWalker->acid;
-		rhsWalker = rhsWalker->next;
-		newWalker->next = new Node;
+		newWalker->next = new Node(rhsWalker->acid);
 		newWalker = newWalker->next;
-		lhsWalker = lhsWalker->next;
-		delete deletePtr;
-		deletePtr = lhsWalker;
+		rhsWalker = rhsWalker->next;
 	}
 	return *this;
 }
