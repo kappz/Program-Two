@@ -10,8 +10,13 @@ int main()
 	DNA a("zcgt");
 	DNA b("cbgk");
 	DNA c("CCCC");
-	a = b + (a + c);
+//	cout << a << endl << b << endl << c << endl;
+	a = a + (b + c);
+//	b = c;
+	
 	cout << a;
+//	cout << a << endl << b << endl << c << endl;
+
 	system("pause");
 	return 0;
 }

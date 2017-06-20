@@ -24,6 +24,7 @@ struct Node
 class DNA
 {
 public:
+	DNA(); // initializes the strand to default
 	DNA(string dna); // initalizes the strand to the string
 	DNA(const DNA& rhs); // copy constructor
 	~DNA(); // destructor
@@ -34,7 +35,7 @@ public:
 	DNA operator+(const DNA& rhs) const; // returns self + rhs
 //	int find(const DNA& subStr) const;
 	// returns the first position subStr in self exists or -1
-//	DNA reverse() const; // returns a DNA strand reversed
+	DNA reverse() const; // returns a DNA strand reversed
 	friend ostream& operator<<(ostream & out, DNA rhs); // prints the strand from begin to end
 														// the first position is 0
 														// output gattaca.print(1,3) is att
@@ -49,6 +50,12 @@ private:
 	Node *strand;
 	int length;
 };
+
+DNA::DNA()
+{
+	strand = nullptr;
+	length = 0;
+}
 
 DNA::DNA(string dna)
 {
@@ -166,17 +173,17 @@ DNA DNA::operator=(const DNA& rhs)
 {
 	Node *newWalker = nullptr;
 	Node *rhsWalker = rhs.strand;
-//	Node *deleteWalker = this->strand;
-//	Node *deletePtr = deleteWalker;
+	Node *deleteWalker = this->strand;
+	Node *deletePtr = deleteWalker;
 	this->strand = new Node(rhsWalker->acid);
 	newWalker = this->strand;
 	rhsWalker = rhsWalker->next;
-//	while (deleteWalker != nullptr)
-//	{
-//		deleteWalker = deleteWalker->next;
-//		delete deletePtr;
-//		deletePtr = deleteWalker;
-//	}
+	while (deleteWalker != nullptr)
+	{
+		deleteWalker = deleteWalker->next;
+		delete deletePtr;
+		deletePtr = deleteWalker;
+	}
 	while (rhsWalker != nullptr)
 	{
 		newWalker->next = new Node(rhsWalker->acid);
@@ -215,3 +222,25 @@ DNA DNA::operator+(const DNA& rhs) const
 	}
 	return out;
 }
+
+ DNA DNA::reverse() const
+ {
+	 DNA reverseDNA = *this;
+	 Node *front = nullptr;
+	 Node *back = nullptr;
+	 Node *newWalker = reverseDNA.strand;
+	 Node *deleteWalker = reverseDNA.strand;
+	 Node *deletePtr = deleteWalker;
+	 reverseDNA.strand = new Node(newWalker->acid);
+	 back = reverseDNA.strand;
+	 newWalker = newWalker->next;
+	 while (newWalker != nullptr)
+	 {
+		 front = new Node(newWalker->acid);
+		 front->next = back;
+		 back = front;
+		 newWalker = newWalker->next;
+	 }
+	 reverseDNA.strand = back;
+	 return reverseDNA;
+ }
