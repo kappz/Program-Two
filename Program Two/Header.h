@@ -31,11 +31,11 @@ public:
 	//returns true if rhs has the same acids in the same order to self
 	DNA operator=(const DNA& rhs);
 //	// assigns rhs to self (with no memory leak)
-//	DNA operator+(const DNA& rhs) const; // returns self + rhs
+	DNA operator+(const DNA& rhs) const; // returns self + rhs
 //	int find(const DNA& subStr) const;
 	// returns the first position subStr in self exists or -1
 //	DNA reverse() const; // returns a DNA strand reversed
-//	friend ostream& operator<<(ostream & out, DNA rhs); // prints the strand from begin to end
+	friend ostream& operator<<(ostream & out, DNA rhs); // prints the strand from begin to end
 														// the first position is 0
 														// output gattaca.print(1,3) is att
 //	DNA substr(int begin, int width) const;
@@ -89,13 +89,13 @@ DNA::DNA(const DNA& rhs)
 	
 	Node *oldWalker = rhs.strand;
 	Node *newWalker = nullptr;
-	this->strand = nullptr;
+	strand = nullptr;
 	while (oldWalker != nullptr)
 	{
-		if (this->strand == nullptr)
+		if (strand == nullptr)
 		{
-			this->strand = new Node(oldWalker->acid);
-			newWalker = this->strand;
+			strand = new Node(oldWalker->acid);
+			newWalker = strand;
 		}
 		else
 		{
@@ -166,21 +166,48 @@ DNA DNA::operator=(const DNA& rhs)
 {
 	Node *rhsWalker = rhs.strand;
 	Node *lhsWalker = this->strand;
-	Node *newWalker = nullptr;
 	Node *deletePtr = lhsWalker;
-	this->strand = new Node(rhsWalker->acid);
-	newWalker = this->strand->next;
+	this->strand = new Node;
+	Node *newWalker = this->strand;
 	while (rhsWalker != nullptr)
 	{
-		
-		newWalker = new Node(rhsWalker->acid);
+		newWalker->acid = rhsWalker->acid;
 		rhsWalker = rhsWalker->next;
+		newWalker->next = new Node;
 		newWalker = newWalker->next;
 		lhsWalker = lhsWalker->next;
 		delete deletePtr;
 		deletePtr = lhsWalker;
-		
 	}
 	return *this;
 }
 
+DNA DNA::operator+(const DNA& rhs) const
+{
+	
+	DNA result = *this;
+	
+	Node *rhsWalker = rhs.strand;
+	Node *resultWalker = result.strand;
+	while (resultWalker->next != nullptr)
+		resultWalker = resultWalker->next;
+	while (rhsWalker != nullptr)
+	{
+		resultWalker->next = new Node(rhsWalker->acid);
+		resultWalker = resultWalker->next;
+		rhsWalker = rhsWalker->next;
+	}
+	
+	return result;
+}
+
+ ostream& operator<<(ostream & out, DNA rhs)
+{
+	Node *walker = rhs.strand;
+	while (walker != nullptr)
+	{
+		out << walker->acid << " ";
+		walker = walker->next;
+	}
+	return out;
+}

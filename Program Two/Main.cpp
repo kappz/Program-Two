@@ -7,14 +7,12 @@ using namespace std;
 int main()
 {
 
-	DNA a("acgt");
-	DNA b("abgt");
-	if (a == b)
-	{
-		cout << "Operator == function called" << endl;
-	}
-	a = b;
+	DNA a("zcgt");
+	DNA b("cbgt");
+	DNA c("CCCC");
+	cout << a + b;
 	
+	cout << c << endl;
 	system("pause");
 	return 0;
 }
