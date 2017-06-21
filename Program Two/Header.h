@@ -31,21 +31,24 @@ public:
 	bool operator==(const DNA& rhs) const;
 	//returns true if rhs has the same acids in the same order to self
 	DNA operator=(const DNA& rhs);
-//	// assigns rhs to self (with no memory leak)
+	//	// assigns rhs to self (with no memory leak)
 	DNA operator+(const DNA& rhs) const; // returns self + rhs
-//	int find(const DNA& subStr) const;
-	// returns the first position subStr in self exists or -1
+//	int find(const DNA & rhs);
+	// returns the first position of subStr in self if exists or -1
+										 //	int find(const DNA& subStr) const;
+										 // returns the first position subStr in self exists or -1
 	DNA reverse() const; // returns a DNA strand reversed
-	friend ostream& operator<<(ostream & out, DNA rhs); // prints the strand from begin to end
-														// the first position is 0
-														// output gattaca.print(1,3) is att
-//	DNA substr(int begin, int width) const;
-	// returns the substr and from begin, returns the next width acids
+	friend ostream & operator<< (ostream & out, DNA rhs); // prints the strand from begin to end
+						// the first position is 0
+						// output gattaca print ( 1 , 3 ) is att
+	DNA substr(int begin, int width) const;
+	//  returns the substr and from begin, retunrs the next width acids
 //	int subSeq(const DNA rhs) const;
 	// returns location of first acid if self has a subsequence matching rhs, -1 otherwise
 //	bool unitTestPlus();
 //	bool unitTestSubstr();
 //	bool unitTestFind();
+
 private:
 	Node *strand;
 	int length;
@@ -89,11 +92,11 @@ DNA::DNA(const DNA& rhs)
 	/*
 	PRE: an operation requiring a copy constructor has been performed
 	an object of type DNA is passed through by reference
-	POST: a deep copy of the original argument has been created and 
+	POST: a deep copy of the original argument has been created and
 	temporarly stored in memory
 	*/
-	
-	
+
+
 	Node *oldWalker = rhs.strand;
 	Node *newWalker = nullptr;
 	strand = nullptr;
@@ -111,7 +114,7 @@ DNA::DNA(const DNA& rhs)
 		}
 		oldWalker = oldWalker->next;
 	}
-	
+
 	cout << "Copy constructor called." << endl;
 }
 
@@ -122,7 +125,7 @@ DNA::~DNA()
 	PRE: an operation requiring a delete constructor has been performed
 	POST: an object has been deleted from memory
 	*/
-	
+
 	Node *deletePtr = this->strand;
 	while (deletePtr != nullptr)
 	{
@@ -130,7 +133,7 @@ DNA::~DNA()
 		delete deletePtr;
 		deletePtr = this->strand;
 	}
-	
+
 	cout << "Destructor called." << endl;
 }
 
@@ -155,7 +158,7 @@ bool DNA::operator==(const DNA& rhs) const
 	else
 		while (lhsWalker->next != nullptr)
 		{
-			if ( lhsWalker->acid == rhsWalker->acid)
+			if (lhsWalker->acid == rhsWalker->acid)
 			{
 				lhsWalker = lhsWalker->next;
 				rhsWalker = rhsWalker->next;
@@ -195,9 +198,9 @@ DNA DNA::operator=(const DNA& rhs)
 
 DNA DNA::operator+(const DNA& rhs) const
 {
-	
+
 	DNA result = *this;
-	
+
 	Node *rhsWalker = rhs.strand;
 	Node *resultWalker = result.strand;
 	while (resultWalker->next != nullptr)
@@ -208,11 +211,11 @@ DNA DNA::operator+(const DNA& rhs) const
 		resultWalker = resultWalker->next;
 		rhsWalker = rhsWalker->next;
 	}
-	
+
 	return result;
 }
 
- ostream& operator<<(ostream & out, DNA rhs)
+ostream& operator<<(ostream & out, DNA rhs)
 {
 	Node *walker = rhs.strand;
 	while (walker != nullptr)
@@ -223,24 +226,43 @@ DNA DNA::operator+(const DNA& rhs) const
 	return out;
 }
 
- DNA DNA::reverse() const
- {
-	 DNA reverseDNA = *this;
-	 Node *front = nullptr;
-	 Node *back = nullptr;
-	 Node *newWalker = reverseDNA.strand;
-	 Node *deleteWalker = reverseDNA.strand;
-	 Node *deletePtr = deleteWalker;
-	 reverseDNA.strand = new Node(newWalker->acid);
-	 back = reverseDNA.strand;
-	 newWalker = newWalker->next;
-	 while (newWalker != nullptr)
-	 {
-		 front = new Node(newWalker->acid);
-		 front->next = back;
-		 back = front;
-		 newWalker = newWalker->next;
-	 }
-	 reverseDNA.strand = back;
-	 return reverseDNA;
- }
+DNA DNA::reverse() const
+{
+	DNA reverseDNA;
+	Node *front = nullptr;
+	Node *back = nullptr;
+	Node *newWalker = this->strand;
+	reverseDNA.strand = new Node(newWalker->acid);
+	back = reverseDNA.strand;
+	newWalker = newWalker->next;
+	while (newWalker != nullptr)
+	{
+		front = new Node(newWalker->acid);
+		front->next = back;
+		back = front;
+		newWalker = newWalker->next;
+	}
+	reverseDNA.strand = back;
+	return reverseDNA;
+}
+
+DNA DNA::substr(int begin, int width) const
+{
+	DNA substr;
+	Node *walker = nullptr;
+	Node *search = this->strand;
+	for (int i = 0; i < begin - 1; ++i)
+	{
+		search = search->next;
+	}
+	substr.strand = new Node(search->acid);
+	search = search->next;
+	walker = substr.strand;
+	for (int i = 0; i < width - 1; ++i)
+	{
+		walker->next = new Node(search->acid);
+		search = search->next;
+		walker = walker->next;
+	}
+	return substr;
+}
