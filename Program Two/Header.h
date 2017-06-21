@@ -33,7 +33,7 @@ public:
 	DNA operator=(const DNA& rhs);
 	//	// assigns rhs to self (with no memory leak)
 	DNA operator+(const DNA& rhs) const; // returns self + rhs
-//	int find(const DNA & rhs);
+	int find(const DNA & rhs);
 	// returns the first position of subStr in self if exists or -1
 										 //	int find(const DNA& subStr) const;
 										 // returns the first position subStr in self exists or -1
@@ -265,4 +265,40 @@ DNA DNA::substr(int begin, int width) const
 		walker = walker->next;
 	}
 	return substr;
+}
+
+int DNA::find(const DNA & rhs)
+{
+	int count = 1;
+	int position = 0;
+	Node *selfWalker = this->strand;
+	Node *rhsWalker = rhs.strand;
+	Node *tempWalker = nullptr;
+	while (selfWalker != nullptr)
+	{
+		if (selfWalker->acid == rhsWalker->acid)
+		{
+			position = count;
+			tempWalker = selfWalker;
+			while (tempWalker->acid == rhsWalker->acid)
+			{
+				tempWalker = tempWalker->next;
+				rhsWalker = rhsWalker->next;
+				if (tempWalker == nullptr)
+					return -1;
+				if (rhsWalker == nullptr)
+				{
+					return position;
+				}
+			}			
+		}
+		else
+		{
+			position = 0;
+			++count;
+			selfWalker = selfWalker->next;
+			rhsWalker = rhs.strand;
+		}
+	}
+	return -1;
 }
