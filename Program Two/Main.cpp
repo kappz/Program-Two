@@ -13,6 +13,7 @@ int main()
 	DNA c("opqrstu");
 	DNA d("abc");
 	DNA e;
+	DNA q("efg");
 	if (unitTest)
 	{
 		if (d.unitTestPlus())
@@ -31,6 +32,10 @@ int main()
 			cout << "Unit test find passed." << endl;
 		else
 			cout << "Unit test find failed." << endl;
+		if (d.unitTestReverse())
+			cout << "Unit test reverse passed." << endl;
+		else
+			cout << "Unit test reverse failed." << endl;
 
 	}
 	
@@ -38,6 +43,9 @@ int main()
 		cout << "equal" << endl;
 	else
 		cout << "not equal" << endl;
+	cout << a + b + c << endl;
+	cout << a.substr(3, 3);
+	cout << b.find(q);
 	system("pause");
 	return 0;
 }
