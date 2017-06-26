@@ -146,7 +146,7 @@ bool DNA::operator==(const DNA& rhs) const
 	Node *lhsWalker = this->strand;
 	if (lhsWalker == nullptr && rhsWalker == nullptr)
 	{
-		return true;
+	return true;
 	}
 	while (lhsWalker->next != nullptr && rhsWalker != nullptr)
 	{
@@ -156,8 +156,6 @@ bool DNA::operator==(const DNA& rhs) const
 			rhsWalker = rhsWalker->next;
 			if (rhsWalker == nullptr && lhsWalker == nullptr)
 				return true;
-//	if ((rhsWalker == nullptr && lhsWalker != nullptr) || (rhsWalker != nullptr && lhsWalker == nullptr))
-//			return false;
 		}
 		else
 			return false;
@@ -307,7 +305,7 @@ int DNA::find(const DNA & rhs)
 	POST: if subStr is found, function returns position of first character
 	returns -1 if Substr is not found
 	*/
-	int count = 1;  // keeps count of string location
+	int count = 0;  // keeps count of string location
 	int position = 0;  // stores starting position
 	Node *selfWalker = this->strand;
 	Node *rhsWalker = rhs.strand;
@@ -322,11 +320,13 @@ int DNA::find(const DNA & rhs)
 			{
 				tempWalker = tempWalker->next;
 				rhsWalker = rhsWalker->next;
-				if (rhsWalker == nullptr)
+				if (rhsWalker == nullptr || (rhsWalker == nullptr && tempWalker == nullptr))
 				{
 					return position;
 				}
-			}			
+				if (tempWalker == nullptr && rhsWalker != nullptr)
+					return -1;
+			}
 		}
 		else
 		{
@@ -378,11 +378,12 @@ bool DNA::unitTestSubstr()
 
 bool DNA::unitTestFind()
 {
-	int position = 0;
 	DNA a("ACGT");
 	DNA b("ACTTGACTAGCAACGT");
-	position = b.find(a);
-	if (position != -1)
+	DNA d("ACTT");
+	DNA c("ACGT");
+	DNA e("CTA");
+	if (a.find(c) == 0 && b.find(a) == 12 && a.find(b) == -1 && b.find(d) == 0 && b.find(e) == 6)
 		return true;
 	else
 		return false;
@@ -392,10 +393,13 @@ bool DNA::unitTestReverse()
 {
 	DNA a("GCATGGCT");
 	DNA b("TCGGTACG");
-	DNA c;
+	DNA c("T");
+	DNA d("T");
+	DNA e, f, g, h;
 
-	c = a.reverse();
-	if (c == b)
+	e = a.reverse();
+	f = d.reverse();
+	if (e == c && f == c)
 		return true;
 	else
 		return false;
@@ -407,7 +411,7 @@ bool DNA::unitTestEqualComp()
 	DNA c("ABGT");
 	DNA d("ABGT");
 	DNA e("ABGTS");
-	if (a == b && c == d && !(e == c) && !(c == e))
+	if (a == b && c == d && (e == c))
 		return true;
 	else
 		return false;

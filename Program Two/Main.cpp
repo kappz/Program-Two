@@ -23,7 +23,7 @@ int main()
 		if (d.unitTestSubstr())
 			cout << "Unit test Substr test passed." << endl;
 		else
-			cout << "Unit |Test substr test failed." << endl;
+			cout << "Unit Test substr test failed." << endl;
 		if (d.unitTestFind())
 			cout << "Unit test find passed." << endl;
 		else
