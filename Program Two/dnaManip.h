@@ -51,6 +51,7 @@ public:
 	bool unitTestSubstr();  // tests return a sustring of a strand
 	bool unitTestFind();  // tests finding a substring and returning its position
 	bool unitTestReverse();  // tests reverse function
+	bool unitTestEqualComp();  // tests == overload operator
 
 private:
 	Node *strand;
@@ -123,12 +124,12 @@ DNA::~DNA()
 	PRE: DNA type variable left scope, 
 	POST: an object has been deleted from memory
 	*/
-	Node *deletePtr = strand;
+	Node *deletePtr = this->strand;
 	while (deletePtr != nullptr)
 	{
-		strand = strand->next;
+		this->strand = this->strand->next;
 		delete deletePtr;
-		deletePtr = strand;
+		deletePtr = this->strand;
 	}
 }
 
@@ -143,22 +144,24 @@ bool DNA::operator==(const DNA& rhs) const
 	*/
 	Node *rhsWalker = rhs.strand;
 	Node *lhsWalker = this->strand;
-	if (lhsWalker == nullptr)
-		return true;
-	if (length == rhs.length)  // checks for equality in strand length
+	if (lhsWalker == nullptr && rhsWalker == nullptr)
 	{
-		while (lhsWalker->next != nullptr)
-		{
-			if (lhsWalker->acid == rhsWalker->acid)
-			{
-				lhsWalker = lhsWalker->next;
-				rhsWalker = rhsWalker->next;
-			}
-			else
-				return false;
-		}
+		return true;
 	}
-	return true;
+	while (lhsWalker->next != nullptr && rhsWalker != nullptr)
+	{
+		if (lhsWalker->acid == rhsWalker->acid)
+		{
+			lhsWalker = lhsWalker->next;
+			rhsWalker = rhsWalker->next;
+			if (rhsWalker == nullptr && lhsWalker == nullptr)
+				return true;
+//	if ((rhsWalker == nullptr && lhsWalker != nullptr) || (rhsWalker != nullptr && lhsWalker == nullptr))
+//			return false;
+		}
+		else
+			return false;
+	}
 }
 
 
@@ -396,6 +399,19 @@ bool DNA::unitTestReverse()
 		return true;
 	else
 		return false;
+}
+
+bool DNA::unitTestEqualComp()
+{
+	DNA a, b;
+	DNA c("ABGT");
+	DNA d("ABGT");
+	DNA e("ABGTS");
+	if (a == b && c == d && !(e == c) && !(c == e))
+		return true;
+	else
+		return false;
+
 }
 
 #endif

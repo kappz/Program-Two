@@ -32,7 +32,10 @@ int main()
 			cout << "Unit test reverse passed." << endl;
 		else
 			cout << "Unit test reverse failed." << endl;
-
+		if (d.unitTestEqualComp())
+			cout << "Unit test equality comparison passed." << endl;
+		else
+			cout << "Unit test equality comparison failed." << endl;
 	}
 	
 	system("pause");
