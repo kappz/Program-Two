@@ -146,19 +146,19 @@ bool DNA::operator==(const DNA& rhs) const
 	Node *lhsWalker = this->strand;
 	if (lhsWalker == nullptr && rhsWalker == nullptr)
 	{
-	return true;
+		return true;
 	}
-	while (lhsWalker->next != nullptr && rhsWalker != nullptr)
+	while (lhsWalker != nullptr && rhsWalker != nullptr)
 	{
 		if (lhsWalker->acid == rhsWalker->acid)
 		{
-			lhsWalker = lhsWalker->next;
-			rhsWalker = rhsWalker->next;
 			if (rhsWalker == nullptr && lhsWalker == nullptr)
 				return true;
 		}
 		else
 			return false;
+		lhsWalker = lhsWalker->next;
+		rhsWalker = rhsWalker->next;
 	}
 }
 
@@ -367,7 +367,7 @@ bool DNA::unitTestSubstr()
 	test substr beginning with string first char
 	test substr running entire string length
 	*/
-		if (b == a.substr(10, 4) && c == a.substr(0, 1) && a == a.substr(0,14))
+		if (b == a.substr(9, 4) && c == a.substr(2, 1) && a == a.substr(0,14))
 		{
 			return true;
 		}
