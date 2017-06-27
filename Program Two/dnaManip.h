@@ -4,11 +4,11 @@
 /*
 Author: Peter O'Donohue
 Creation Date: 06/12/17
-Modification Date: 06/21/17
+Modification Date: 06/27/17
 Description: This class contains several functions that allow the user to create, compare, and
 manipulate DNA strands. To gain access to this class, the user must include "dnaManip.H"
-in their main program header. The user will then create objects of type "DNA" that will act as 
-their DNA strands, further modifying these objects with the function members included below.
+in their main program header. The user will then create objects of type "DNA" that will act as
+their DNA strands. These objects can then be modified using the function members below.
 */
 
 #include <iostream>
@@ -43,10 +43,10 @@ public:
 								// returns the first position subStr in self exists or -1
 	DNA reverse() const; // returns a DNA strand reversed
 	friend ostream & operator<< (ostream & out, DNA rhs); // prints the strand from begin to end
-						        // the first position is 0
-						        // output gattaca print ( 1 , 3 ) is att
-	DNA substr(int begin, int width) const; 
-							    //  returns the substr and from begin, returns the next width acids
+														  // the first position is 0
+														  // output gattaca print ( 1 , 3 ) is att
+	DNA substr(int begin, int width) const;
+	//  returns the substr and from begin, returns the next width acids
 	bool unitTestPlus();  // tests sum of two DNA strands of equal length
 	bool unitTestSubstr();  // tests return a sustring of a strand
 	bool unitTestFind();  // tests finding a substring and returning its position
@@ -69,7 +69,7 @@ DNA::DNA(string dna)
 	/*
 	PRE: an object of type DNA has been initialized with
 	a parameter containing a string word in the form of a DNA strand
-	POST: link list created with new memory space, each node containing a 
+	POST: link list created with new memory space, each node containing a
 	character of string dna, head of list assigned to obect's pointer strand
 	*/
 	Node *walker = nullptr;
@@ -121,7 +121,7 @@ DNA::DNA(const DNA& rhs)
 DNA::~DNA()
 {
 	/*
-	PRE: DNA type variable left scope, 
+	PRE: DNA type variable left scope,
 	POST: an object has been deleted from memory
 	*/
 	Node *deletePtr = this->strand;
@@ -144,22 +144,30 @@ bool DNA::operator==(const DNA& rhs) const
 	*/
 	Node *rhsWalker = rhs.strand;
 	Node *lhsWalker = this->strand;
-	if (lhsWalker == nullptr && rhsWalker == nullptr)
+	if (lhsWalker == nullptr && rhsWalker == nullptr) // strands contain default constructor values
 	{
 		return true;
 	}
-	while (lhsWalker != nullptr && rhsWalker != nullptr)
+	// strands are unequal in length
+	else if ((lhsWalker == nullptr && rhsWalker != nullptr) || (lhsWalker != nullptr && rhsWalker == nullptr))
+		return false;
+	else
 	{
-		if (lhsWalker->acid == rhsWalker->acid)
+		while (lhsWalker->acid == rhsWalker->acid)
 		{
-			if (rhsWalker == nullptr && lhsWalker == nullptr)
+			if (lhsWalker->next == nullptr && rhsWalker->next == nullptr)  // end of both strands
 				return true;
+			else
+			{
+				lhsWalker = lhsWalker->next;
+				rhsWalker = rhsWalker->next;
+			}
+			// strands are unequal in length
+			if ((lhsWalker == nullptr && rhsWalker != nullptr) || (lhsWalker != nullptr && rhsWalker == nullptr))
+				return false;
 		}
-		else
-			return false;
-		lhsWalker = lhsWalker->next;
-		rhsWalker = rhsWalker->next;
 	}
+	return false;
 }
 
 
@@ -206,7 +214,7 @@ DNA DNA::operator+(const DNA& rhs) const
 	/*
 	PRE: rhs and self objects were declared, at least one of them having length > 0
 	POST: the two objects were searched and stored in
-	a new object 'result' 
+	a new object 'result'
 	result is returned to main function
 	*/
 	DNA result = *this; // stores sum result
@@ -341,15 +349,20 @@ int DNA::find(const DNA & rhs)
 
 bool DNA::unitTestPlus()
 {
-	DNA c, f, g, h, i, j;
-	DNA a("ACGT");
-	DNA b("CGTA");
-	DNA d("ACGTCGTA");
-	DNA e("ACGTACGTCGTA");
-	c = a + b;  // sum two strings of equal length
-	f = a + d;  // sum two strings of unequal length
-	i = g + h;  // sum two strings each with zero elements and zero length
-	if (c == d && f == e && i == j)
+	DNA a, b, c, d, e, f;
+	DNA g("ACGT");
+	DNA h("CGTA");
+	DNA i("ACGTCGTA");
+	DNA j("ACGTCGTACGTA");
+	/*
+	test sum for two strands of equal length
+	test sum for two strands of unequal length
+	test sum for two strands containing zero values
+	*/
+	a = g + h;
+	b = i + h;
+	c = d + e;
+	if (a == i && b == j && c == f)
 	{
 		return true;
 	}
@@ -367,13 +380,13 @@ bool DNA::unitTestSubstr()
 	test substr beginning with string first char
 	test substr running entire string length
 	*/
-		if (b == a.substr(9, 4) && c == a.substr(2, 1) && a == a.substr(0,14))
-		{
-			return true;
-		}
+	if (b == a.substr(9, 4) && c == a.substr(2, 1) && a == a.substr(0, 13))
+	{
+		return true;
+	}
 	else
 		return false;
-	
+
 }
 
 bool DNA::unitTestFind()
@@ -383,6 +396,13 @@ bool DNA::unitTestFind()
 	DNA d("ACTT");
 	DNA c("ACGT");
 	DNA e("CTA");
+	/*
+	test find when substr is equal to strand
+	test find when substr ends at strand end
+	test find when substr is larger than strand
+	test find when substr starts at beginning of strand
+	test find when substr is located within middle of strand
+	*/
 	if (a.find(c) == 0 && b.find(a) == 12 && a.find(b) == -1 && b.find(d) == 0 && b.find(e) == 6)
 		return true;
 	else
@@ -396,10 +416,15 @@ bool DNA::unitTestReverse()
 	DNA c("T");
 	DNA d("T");
 	DNA e, f, g, h;
-
+	/*
+	test reverse for strands containing more than one element
+	test reverse for strands containing one element
+	test reverse for strands containing zero elements
+	*/
 	e = a.reverse();
 	f = d.reverse();
-	if (e == c && f == c)
+	g = h.reverse();
+	if (e == b && f == c, g == h)
 		return true;
 	else
 		return false;
@@ -411,7 +436,15 @@ bool DNA::unitTestEqualComp()
 	DNA c("ABGT");
 	DNA d("ABGT");
 	DNA e("ABGTS");
-	if (a == b && c == d && (e == c))
+	DNA f("T");
+	DNA g("T");
+	/*
+	test equality for strands containing zero elements
+	test equality for strands containing more than one element
+	test unequality for strands containing unequal amount of elements
+	test equality for strands containing one element
+	*/
+	if (a == b && c == d && !(e == c) && !(c == e) && f == g)
 		return true;
 	else
 		return false;
